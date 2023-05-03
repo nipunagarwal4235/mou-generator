@@ -1,92 +1,40 @@
-import React, { useState } from 'react';
-import { uid } from 'uid';
-import InvoiceItem from './InvoiceItem';
-import InvoiceModal from './InvoiceModal';
-import incrementString from '../helpers/incrementString';
+import React, { useState } from "react";
+
+import InvoiceModal from "./InvoiceModal";
+import Chatbot from "./chatbot/Chatbot.tsx";
+
 const date = new Date();
-const today = date.toLocaleDateString('en-GB', {
-  month: 'numeric',
-  day: 'numeric',
-  year: 'numeric',
+const today = date.toLocaleDateString("en-GB", {
+  month: "numeric",
+  day: "numeric",
+  year: "numeric",
 });
 
 const InvoiceForm = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [discount, setDiscount] = useState('');
-  const [tax, setTax] = useState('');
   const [invoiceNumber, setInvoiceNumber] = useState(1);
-  const [cashierName, setCashierName] = useState('');
-  const [customerName, setCustomerName] = useState('');
-  const [items, setItems] = useState([
-    {
-      id: uid(6),
-      name: '',
-      qty: 1,
-      price: '1.00',
-    },
-  ]);
+  const [cashierName, setCashierName] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [party1Address, setParty1Address] = useState("");
+  const [party2Address, setParty2Address] = useState("");
+  const [party1Authority, setParty1Authority] = useState("");
+  const [party2Authority, setParty2Authority] = useState("");
+  const [party1Designation, setParty1Designation] = useState("");
+  const [party2Designation, setParty2Designation] = useState("");
+
+  // const [cashierName, setCashierName] = useState("BML Munjal University");
+  // const [customerName, setCustomerName] = useState("Unlu");
+  // const [party1Address, setParty1Address] = useState("67th Milestone, NH-48, Gurgaon, Haryana 122413");
+  // const [party2Address, setParty2Address] = useState("DLF Golf Course Rd, Sector 53, Gurgaon, Haryana, 122001");
+  // const [party1Authority, setParty1Authority] = useState("Col. Mohit Bawa");
+  // const [party2Authority, setParty2Authority] = useState("John Doe");
+  // const [party1Designation, setParty1Designation] = useState("Dean Student Welfare");
+  // const [party2Designation, setParty2Designation] = useState("Head External Relations");
 
   const reviewInvoiceHandler = (event) => {
     event.preventDefault();
     setIsOpen(true);
   };
-
-  const addNextInvoiceHandler = () => {
-    setInvoiceNumber((prevNumber) => incrementString(prevNumber));
-    setItems([
-      {
-        id: uid(6),
-        name: '',
-        qty: 1,
-        price: '1.00',
-      },
-    ]);
-  };
-
-  const addItemHandler = () => {
-    const id = uid(6);
-    setItems((prevItem) => [
-      ...prevItem,
-      {
-        id: id,
-        name: '',
-        qty: 1,
-        price: '1.00',
-      },
-    ]);
-  };
-
-  const deleteItemHandler = (id) => {
-    setItems((prevItem) => prevItem.filter((item) => item.id !== id));
-  };
-
-  const edtiItemHandler = (event) => {
-    const editedItem = {
-      id: event.target.id,
-      name: event.target.name,
-      value: event.target.value,
-    };
-
-    const newItems = items.map((items) => {
-      for (const key in items) {
-        if (key === editedItem.name && items.id === editedItem.id) {
-          items[key] = editedItem.value;
-        }
-      }
-      return items;
-    });
-
-    setItems(newItems);
-  };
-
-  const subtotal = items.reduce((prev, curr) => {
-    if (curr.name.trim().length > 0)
-      return prev + Number(curr.price * Math.floor(curr.qty));
-    else return prev;
-  }, 0);
-  const taxRate = (tax * subtotal) / 100;
-  const discountRate = (discount * subtotal) / 100;
-  const total = subtotal - discountRate + taxRate;
 
   return (
     <form
@@ -101,7 +49,7 @@ const InvoiceForm = () => {
           </div>
           <div className="flex items-center space-x-2">
             <label className="font-bold" htmlFor="invoiceNumber">
-              Invoice Number:
+              MoU Number
             </label>
             <input
               required
@@ -116,167 +64,170 @@ const InvoiceForm = () => {
             />
           </div>
         </div>
-        <h1 className="text-center text-lg font-bold">INVOICE</h1>
+        <h1 className="text-center text-lg font-bold">
+          Memorandum of Understanding
+        </h1>
         <div className="grid grid-cols-2 gap-2 pt-4 pb-8">
-          <label
-            htmlFor="cashierName"
-            className="text-sm font-bold sm:text-base"
-          >
-            Cashier:
-          </label>
-          <input
-            required
-            className="flex-1"
-            placeholder="Cashier name"
-            type="text"
-            name="cashierName"
-            id="cashierName"
-            value={cashierName}
-            onChange={(event) => setCashierName(event.target.value)}
-          />
-          <label
-            htmlFor="customerName"
-            className="col-start-2 row-start-1 text-sm font-bold md:text-base"
-          >
-            Customer:
-          </label>
-          <input
-            required
-            className="flex-1"
-            placeholder="Customer name"
-            type="text"
-            name="customerName"
-            id="customerName"
-            value={customerName}
-            onChange={(event) => setCustomerName(event.target.value)}
-          />
+          <div>
+            <label
+              htmlFor="cashierName"
+              className="text-sm font-bold sm:text-base"
+            >
+              Party 1:
+            </label>
+            <input
+              required
+              className="flex-1"
+              placeholder="Party 1 Name"
+              type="text"
+              name="cashierName"
+              id="cashierName"
+              value={cashierName}
+              onChange={(event) => setCashierName(event.target.value)}
+            />
+            <label
+              htmlFor="party1Address"
+              className="text-sm font-bold sm:text-base"
+            >
+              Address:
+            </label>
+            <input
+              required
+              className="flex-1"
+              placeholder="Party 1 Address"
+              type="text"
+              name="party1Address"
+              id="party1Address"
+              value={party1Address}
+              onChange={(event) => setParty1Address(event.target.value)}
+            />
+            <label
+              htmlFor="party1Authority"
+              className="text-sm font-bold sm:text-base"
+            >
+              Authority:
+            </label>
+            <input
+              required
+              className="flex-1"
+              placeholder="Party 1 Authority"
+              type="text"
+              name="party1Authority"
+              id="party1Authority"
+              value={party1Authority}
+              onChange={(event) => setParty1Authority(event.target.value)}
+            />
+            <label
+              htmlFor="party1Designation"
+              className="text-sm font-bold sm:text-base"
+            >
+              Designation:
+            </label>
+            <input
+              required
+              className="flex-1"
+              placeholder="Party 1 Designation"
+              type="text"
+              name="party1Designation"
+              id="party1Designation"
+              value={party1Designation}
+              onChange={(event) => setParty1Designation(event.target.value)}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="customerName"
+              className="col-start-2 row-start-1 text-sm font-bold md:text-base"
+            >
+              Party 2:
+            </label>
+            <input
+              required
+              className="flex-1"
+              placeholder="Party 2 Name"
+              type="text"
+              name="customerName"
+              id="customerName"
+              value={customerName}
+              onChange={(event) => setCustomerName(event.target.value)}
+            />
+            <label
+              htmlFor="party2Address"
+              className="text-sm font-bold sm:text-base"
+            >
+              Address:
+            </label>
+            <input
+              required
+              className="flex-1"
+              placeholder="Party 2 Address"
+              type="text"
+              name="party2Address"
+              id="party2Address"
+              value={party2Address}
+              onChange={(event) => setParty2Address(event.target.value)}
+            />
+            <label
+              htmlFor="party2Authority"
+              className="text-sm font-bold sm:text-base"
+            >
+              Authority:
+            </label>
+            <input
+              required
+              className="flex-1"
+              placeholder="Party 2 Authority"
+              type="text"
+              name="party2Authority"
+              id="party2Authority"
+              value={party2Authority}
+              onChange={(event) => setParty2Authority(event.target.value)}
+            />
+            <label
+              htmlFor="party2Designation"
+              className="text-sm font-bold sm:text-base"
+            >
+              Designation:
+            </label>
+            <input
+              required
+              className="flex-1"
+              placeholder="Party 2 Designation"
+              type="text"
+              name="party2Designation"
+              id="party2Designation"
+              value={party2Designation}
+              onChange={(event) => setParty2Designation(event.target.value)}
+            />
+          </div>
         </div>
-        <table className="w-full p-4 text-left">
-          <thead>
-            <tr className="border-b border-gray-900/10 text-sm md:text-base">
-              <th>ITEM</th>
-              <th>QTY</th>
-              <th className="text-center">PRICE</th>
-              <th className="text-center">ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <InvoiceItem
-                key={item.id}
-                id={item.id}
-                name={item.name}
-                qty={item.qty}
-                price={item.price}
-                onDeleteItem={deleteItemHandler}
-                onEdtiItem={edtiItemHandler}
-              />
-            ))}
-          </tbody>
-        </table>
-        <button
-          className="rounded-md bg-blue-500 px-4 py-2 text-sm text-white shadow-sm hover:bg-blue-600"
-          type="button"
-          onClick={addItemHandler}
-        >
-          Add Item
-        </button>
-        <div className="flex flex-col items-end space-y-2 pt-6">
-          <div className="flex w-full justify-between md:w-1/2">
-            <span className="font-bold">Subtotal:</span>
-            <span>${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex w-full justify-between md:w-1/2">
-            <span className="font-bold">Discount:</span>
-            <span>
-              ({discount || '0'}%)${discountRate.toFixed(2)}
-            </span>
-          </div>
-          <div className="flex w-full justify-between md:w-1/2">
-            <span className="font-bold">Tax:</span>
-            <span>
-              ({tax || '0'}%)${taxRate.toFixed(2)}
-            </span>
-          </div>
-          <div className="flex w-full justify-between border-t border-gray-900/10 pt-2 md:w-1/2">
-            <span className="font-bold">Total:</span>
-            <span className="font-bold">
-              ${total % 1 === 0 ? total : total.toFixed(2)}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="basis-1/4 bg-transparent">
+        <Chatbot />
         <div className="sticky top-0 z-10 space-y-4 divide-y divide-gray-900/10 pb-8 md:pt-6 md:pl-4">
           <button
             className="w-full rounded-md bg-blue-500 py-2 text-sm text-white shadow-sm hover:bg-blue-600"
             type="submit"
           >
-            Review Invoice
+            Review MoU
           </button>
           <InvoiceModal
             isOpen={isOpen}
             setIsOpen={setIsOpen}
             invoiceInfo={{
+              today,
               invoiceNumber,
               cashierName,
               customerName,
-              subtotal,
-              taxRate,
-              discountRate,
-              total,
+              party1Address,
+              party2Address,
+              party1Authority,
+              party2Authority,
+              party1Designation,
+              party2Designation,
             }}
-            items={items}
-            onAddNextInvoice={addNextInvoiceHandler}
           />
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <label className="text-sm font-bold md:text-base" htmlFor="tax">
-                Tax rate:
-              </label>
-              <div className="flex items-center">
-                <input
-                  className="w-full rounded-r-none bg-white shadow-sm"
-                  type="number"
-                  name="tax"
-                  id="tax"
-                  min="0.01"
-                  step="0.01"
-                  placeholder="0.0"
-                  value={tax}
-                  onChange={(event) => setTax(event.target.value)}
-                />
-                <span className="rounded-r-md bg-gray-200 py-2 px-4 text-gray-500 shadow-sm">
-                  %
-                </span>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label
-                className="text-sm font-bold md:text-base"
-                htmlFor="discount"
-              >
-                Discount rate:
-              </label>
-              <div className="flex items-center">
-                <input
-                  className="w-full rounded-r-none bg-white shadow-sm"
-                  type="number"
-                  name="discount"
-                  id="discount"
-                  min="0"
-                  step="0.01"
-                  placeholder="0.0"
-                  value={discount}
-                  onChange={(event) => setDiscount(event.target.value)}
-                />
-                <span className="rounded-r-md bg-gray-200 py-2 px-4 text-gray-500 shadow-sm">
-                  %
-                </span>
-              </div>
-            </div>
-          </div>
         </div>
+        
       </div>
     </form>
   );
